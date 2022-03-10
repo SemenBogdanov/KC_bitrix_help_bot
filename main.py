@@ -33,8 +33,8 @@ async def on_startup(_):
 @dp.message_handler(commands=['to_bot'])
 @dp.message_handler(Text(contains='аявка'))
 async def get_question(message: types.Message):
-    fsa = "KC_bitrix_help_bot\\service_account.json"
-    # fsa = "service_account.json"
+    # fsa = "KC_bitrix_help_bot\\service_account.json"
+    fsa = "service_account.json"
     sa = gspread.service_account(fsa)
     sh = sa.open("Bitrix_bot_table")
 
