@@ -6,8 +6,8 @@ After=network.target
 [Service]
 Type=simple
 User=semen106
-WorkingDirectory=/home/semen106/bot/kc_bitrix_help_bot
-ExecStart=/usr/bin/python3 /home/semen106/bot/kc_bitrix_help_bot/main.py
+WorkingDirectory=/home/semen106/bot/KC_bitrix_help_bot
+ExecStart=/usr/bin/python3 /home/semen106/bot/KC_bitrix_help_bot/main.py
 RestartSec=20
 Restart=always
 
