@@ -8,7 +8,7 @@ from aiogram.dispatcher.filters import Text
 # from connection import add_task_to_db
 from chats import supportChat
 from create_bot import SupportQuery, ClarifyTask, bot, dp, botDatabase, CloseTask
-from markups import system_reply_markup, project_reply_markup, category_reply_markup
+from markups import system_reply_markup, project_reply_markup_1, project_reply_markup_2, category_reply_markup
 
 
 # Цепь опроса через ClarifyTask
@@ -78,8 +78,12 @@ async def project(call: types.CallbackQuery, state: FSMContext):
         data['system'] = call.data
 
     await SupportQuery.next()
-    await bot.send_message(call.from_user.id, 'Выберите проект в рамках которого будет обращение:', parse_mode='HTML',
-                           reply_markup=project_reply_markup())
+    if data['system'] == 'IMS':
+        await bot.send_message(call.from_user.id, 'Выберите проект в рамках которого будет обращение:',
+                               parse_mode='HTML', reply_markup=project_reply_markup_1())
+    else:
+        await bot.send_message(call.from_user.id, 'Выберите проект в рамках которого будет обращение:',
+                               parse_mode='HTML', reply_markup=project_reply_markup_2())
 
 
 async def ticket_category(call: types.CallbackQuery, state: FSMContext):

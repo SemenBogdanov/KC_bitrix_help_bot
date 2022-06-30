@@ -19,18 +19,23 @@ def system_reply_markup():
     return markup
 
 
-def project_reply_markup():
+def project_reply_markup_1():
     markup = InlineKeyboardMarkup(row_width=1)
-    markup.add(InlineKeyboardButton('Форма: предприятия', callback_data='project1'),
-               InlineKeyboardButton('Форма: запасы', callback_data='project2'),
-               InlineKeyboardButton('Форма: туризм', callback_data='project3'),
-               InlineKeyboardButton('Форма: лагеря отдыха', callback_data='project4'),
-               InlineKeyboardButton('Справочник: лагеря', callback_data='project5'),
-               InlineKeyboardButton('Регионы: стратегии цифровой трансформации', callback_data='project6'),
-               InlineKeyboardButton('Фронтальная стратегия ЦТ', callback_data='project7'),
-               InlineKeyboardButton('База знаний', callback_data='project8'),
-               InlineKeyboardButton('Союзное государство', callback_data='project9'),
-               InlineKeyboardButton('ДФО', callback_data='project10'))
+    markup.add(InlineKeyboardButton('Форма: предприятия', callback_data='Forms_enterprises'),
+               InlineKeyboardButton('Форма: запасы', callback_data='Forms_stocks'),
+               InlineKeyboardButton('Форма: туризм', callback_data='Forms_tourism'),
+               InlineKeyboardButton('Форма: лагеря отдыха', callback_data='Forms_camps'),
+               InlineKeyboardButton('Справочник: лагеря', callback_data='Dict_camps'),
+               InlineKeyboardButton('Регионы: стратегии цифровой трансформации', callback_data='Digital_transformation'),
+               InlineKeyboardButton('Фронтальная стратегия ЦТ', callback_data='Frontal_strategy'),
+               InlineKeyboardButton('База знаний', callback_data='Knowledge_base'),
+               InlineKeyboardButton('Союзное государство', callback_data='Union_Goverment'),
+               InlineKeyboardButton('ДФО', callback_data='DFO'))
+    return markup
+
+def project_reply_markup_2():
+    markup = InlineKeyboardMarkup(row_width=1)
+    markup.add(InlineKeyboardButton('Инциденты', callback_data='Incidents'))
     return markup
 
 
