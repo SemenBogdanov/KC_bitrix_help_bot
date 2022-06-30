@@ -26,8 +26,7 @@ async def get_task_id_and_ask_user_comment(message: types.Message, state: FSMCon
     isInProgress = ''
     userFromId = 0
     if check1 and len(message.text)<5:
-        print("Номер заявки после парсинга сообщения: " + str(check1))
-
+        # print("Номер заявки после парсинга сообщения: " + str(check1))
         task_id = int(message.text)
         try:
             isInProgress = botDatabase.is_in_progress(task_id)
@@ -110,12 +109,21 @@ async def additional_info_1(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['fio'] = message.text
     await SupportQuery.next()
-    await bot.send_message(message.from_user.id, 'Пожалуйста, укажите свой e-mail. Например, IvanovGM@mail.ru')
+    await bot.send_message(message.from_user.id, 'Пожалуйста, напишите свой e-mail, указанный при регистрации в '
+                                                 'системе Битрикс. Например, IvanovGM@mail.ru')
+
+
+async def phone(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['email'] = str(message.text)
+    await SupportQuery.next()
+    await bot.send_message(message.from_user.id, 'Укажите, пожалуйста, контактный номер телефона '
+                                                 'для обратной связи по запросу')
 
 
 async def additional_info_2(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data['email'] = message.text
+        data['phone'] = message.text
     await SupportQuery.next()
     await bot.send_message(message.from_user.id, 'Расскажите подробно что случилось, в чем проблема и что '
                                                  'должна сделать служба поддержки по Вашему мнению')
@@ -214,6 +222,7 @@ def register_supportchains_handler(dp: Dispatcher):
     dp.register_callback_query_handler(additional_info, state=SupportQuery.ticket_category)
     dp.register_message_handler(additional_info_1, state=SupportQuery.fio)
     dp.register_message_handler(additional_info_2, state=SupportQuery.mail)
+    dp.register_message_handler(phone, state=SupportQuery.phone)
     dp.register_message_handler(additional_info_3, state=SupportQuery.short_task_description)
     dp.register_message_handler(cancel_handler, Text(equals='cancel', ignore_case=True), state='*')
     dp.register_message_handler(get_task_id_and_ask_user_comment, state=ClarifyTask.taskNum)

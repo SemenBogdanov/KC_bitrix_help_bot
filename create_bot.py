@@ -31,6 +31,7 @@ class SupportQuery(StatesGroup):
     ticket_category = State()
     fio = State()
     mail = State()
+    phone = State()
     short_task_description = State()
 
 
