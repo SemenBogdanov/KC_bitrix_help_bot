@@ -80,10 +80,10 @@ async def project(call: types.CallbackQuery, state: FSMContext):
     await SupportQuery.next()
     if data['system'] == 'IMS':
         await bot.send_message(call.from_user.id, 'Выберите проект в рамках которого будет обращение:',
-                               parse_mode='HTML', reply_markup=project_reply_markup_1())
+                               parse_mode='HTML', reply_markup=project_reply_markup_2())
     else:
         await bot.send_message(call.from_user.id, 'Выберите проект в рамках которого будет обращение:',
-                               parse_mode='HTML', reply_markup=project_reply_markup_2())
+                               parse_mode='HTML', reply_markup=project_reply_markup_1())
 
 
 async def ticket_category(call: types.CallbackQuery, state: FSMContext):
