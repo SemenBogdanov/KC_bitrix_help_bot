@@ -65,7 +65,7 @@ async def get_user_comment(message: types.Message, state: FSMContext):
 
 # Цепь опроса через SupportQueryClass
 async def support_query_start(message: types.Message):
-    await SupportQuery.system.set() # go to System state
+    await SupportQuery.system.set() # system = State()
     logging.info('support_query_start')
     await bot.send_message(message.chat.id, 'Выберите систему по которой будет обращение:', parse_mode='HTML',
                            reply_markup=system_reply_markup())
@@ -85,7 +85,7 @@ async def project(call: types.CallbackQuery, state: FSMContext):
     else:
         await bot.send_message(call.from_user.id, 'Выберите проект в рамках которого будет обращение:',
                                parse_mode='HTML', reply_markup=project_reply_markup_1())
-    await SupportQuery.next() # go to project state
+    await SupportQuery.next() # project = State()
     logging.info('project')
 
 async def ticket_category(call: types.CallbackQuery, state: FSMContext):
@@ -94,7 +94,7 @@ async def ticket_category(call: types.CallbackQuery, state: FSMContext):
     await bot.send_message(call.from_user.id, 'Выбранный проект: ' + call.data)
     async with state.proxy() as data:
         data['project'] = call.data #record project val in project state
-    await SupportQuery.next() #ticket_category
+    await SupportQuery.next() # ticket_category = State()
     await bot.send_message(call.from_user.id, 'Выберите категорию вопроса:', parse_mode='HTML',
                            reply_markup=category_reply_markup())
     logging.info('ticket_category next additional_info')
@@ -107,7 +107,7 @@ async def additional_info(call: types.CallbackQuery, state: FSMContext):
 
     async with state.proxy() as data:
         data['ticket_category'] = call.data #record ticket_category val in ticket_category state
-    await SupportQuery.next()
+    await SupportQuery.next() # fio = State()
     await bot.send_message(call.from_user.id, 'Пожалуйста, укажите своё ФИО (полностью)')
     logging.info('additional_info, next FIO')
 
@@ -115,7 +115,7 @@ async def additional_info(call: types.CallbackQuery, state: FSMContext):
 async def additional_info_1(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['fio'] = message.text
-    await SupportQuery.next()
+    await SupportQuery.next() # mail = State()
     await bot.send_message(message.from_user.id, 'Пожалуйста, напишите свой e-mail, указанный при регистрации в '
                                                  'системе Битрикс. Например, IvanovGM@mail.ru')
 
@@ -123,7 +123,7 @@ async def additional_info_1(message: types.Message, state: FSMContext):
 async def phone(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['email'] = str(message.text)
-    await SupportQuery.next()
+    await SupportQuery.next() # phone = State()
     await bot.send_message(message.from_user.id, 'Укажите, пожалуйста, контактный номер телефона '
                                                  'для обратной связи по запросу')
 
@@ -131,7 +131,7 @@ async def phone(message: types.Message, state: FSMContext):
 async def additional_info_2(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['phone'] = message.text
-    await SupportQuery.next()
+    await SupportQuery.next() # short_task_description = State()
     await bot.send_message(message.from_user.id, 'Расскажите подробно что случилось, в чем проблема и что '
                                                  'должна сделать служба поддержки по Вашему мнению')
 
@@ -151,6 +151,7 @@ async def additional_info_3(message: types.Message, state: FSMContext):
                     + "ФИО: <b>" + data['fio'] + "</b>\n" \
                     + "Эл. почта: <b>" + str(data['email']) + "</b>\n" \
                     + "Описание: <b>" + data['short_task_description'] + "</b>\n" \
+                    + "Телефон: <b>" + data['phone'] + "</b>\n" \
                     + "Дата регистрации: <b>" + str(data['timestamp']) + "</b>"
     await bot.send_message(supportChat, final_message, parse_mode='HTML')
     await bot.send_message(message.from_user.id, f'Отлично! Ваш запрос зарегистрирован под номером: <b>{id}</b> и уже '
@@ -228,8 +229,8 @@ def register_supportchains_handler(dp: Dispatcher):
     dp.register_callback_query_handler(ticket_category, state=SupportQuery.project)
     dp.register_callback_query_handler(additional_info, state=SupportQuery.ticket_category)
     dp.register_message_handler(additional_info_1, state=SupportQuery.fio)
-    dp.register_message_handler(additional_info_2, state=SupportQuery.mail)
-    dp.register_message_handler(phone, state=SupportQuery.phone)
+    dp.register_message_handler(phone, state=SupportQuery.mail)
+    dp.register_message_handler(additional_info_2, state=SupportQuery.phone)
     dp.register_message_handler(additional_info_3, state=SupportQuery.short_task_description)
     dp.register_message_handler(cancel_handler, Text(equals='cancel', ignore_case=True), state='*')
     dp.register_message_handler(get_task_id_and_ask_user_comment, state=ClarifyTask.taskNum)
