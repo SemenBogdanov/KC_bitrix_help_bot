@@ -64,7 +64,7 @@ class BotDB:
 
     def set_task_status_in_progress(self, task_id: int, tech_employee_id: int):
         """Изменить статус заявки на: в работе"""
-        print(str(task_id), str(tech_employee_id))
+        # print(str(task_id), str(tech_employee_id))
 
         query1 = "UPDATE public.kc_bitrix_bot_tasks SET task_status = 'InProgress' WHERE id = %s"
         query2 = "UPDATE public.kc_bitrix_bot_tasks SET employee_from_support = (" \

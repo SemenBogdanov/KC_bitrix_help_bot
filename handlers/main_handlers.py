@@ -140,10 +140,10 @@ async def accept_task(message: types.Message):
 async def redirect_all_while_task_in_progress(message: types.Message):
     """Функция пересылки сообщений от юзера исполнителю заявки"""
     userHaveTaskInProgress = not botDatabase.check_allow_user_to_create_new_task(message.from_user.id)
-    print('userHaveTaskInProgress:  ' + str(userHaveTaskInProgress))
-    print('message_from_user_id:' + str(message.from_user.id))
+    # print('userHaveTaskInProgress:  ' + str(userHaveTaskInProgress))
+    # print('message_from_user_id:' + str(message.from_user.id))
     empl_from_support = botDatabase.cnd_redirect(message.from_user.id)
-    print('empl_from_support:  ' + str(empl_from_support))
+    # print('empl_from_support:  ' + str(empl_from_support))
 
     # task_is_in_progress = botDatabase.get_task_user_from_id()
     if empl_from_support and userHaveTaskInProgress:

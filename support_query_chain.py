@@ -13,6 +13,7 @@ from markups import system_reply_markup, project_reply_markup_1, project_reply_m
 
 # Цепь опроса через ClarifyTask
 async def clarify_task_start(message: types.Message):
+    logging.info('clarify_task_start')
     await ClarifyTask.taskNum.set()
     await bot.send_message(message.chat.id, 'Укажите номер заявки, по которой необходимо получить дополнительный '
                                             'комментарий', parse_mode='HTML')
@@ -64,7 +65,8 @@ async def get_user_comment(message: types.Message, state: FSMContext):
 
 # Цепь опроса через SupportQueryClass
 async def support_query_start(message: types.Message):
-    await SupportQuery.system.set()
+    await SupportQuery.system.set() # go to System state
+    logging.info('support_query_start')
     await bot.send_message(message.chat.id, 'Выберите систему по которой будет обращение:', parse_mode='HTML',
                            reply_markup=system_reply_markup())
 
@@ -77,25 +79,25 @@ async def project(call: types.CallbackQuery, state: FSMContext):
     async with state.proxy() as data:
         data['system'] = call.data
 
-    await SupportQuery.next()
     if data['system'] == 'IMS':
         await bot.send_message(call.from_user.id, 'Выберите проект в рамках которого будет обращение:',
                                parse_mode='HTML', reply_markup=project_reply_markup_2())
     else:
         await bot.send_message(call.from_user.id, 'Выберите проект в рамках которого будет обращение:',
                                parse_mode='HTML', reply_markup=project_reply_markup_1())
-
+    await SupportQuery.next() # go to project state
+    logging.info('project')
 
 async def ticket_category(call: types.CallbackQuery, state: FSMContext):
     await bot.answer_callback_query(call.id)
     await call.message.delete_reply_markup()
     await bot.send_message(call.from_user.id, 'Выбранный проект: ' + call.data)
-
     async with state.proxy() as data:
-        data['project'] = call.data
-    await SupportQuery.next()
+        data['project'] = call.data #record project val in project state
+    await SupportQuery.next() #ticket_category
     await bot.send_message(call.from_user.id, 'Выберите категорию вопроса:', parse_mode='HTML',
                            reply_markup=category_reply_markup())
+    logging.info('ticket_category next additional_info')
 
 
 async def additional_info(call: types.CallbackQuery, state: FSMContext):
@@ -104,9 +106,10 @@ async def additional_info(call: types.CallbackQuery, state: FSMContext):
     await bot.send_message(call.from_user.id, 'Выбранная категория: ' + call.data)
 
     async with state.proxy() as data:
-        data['ticket_category'] = call.data
+        data['ticket_category'] = call.data #record ticket_category val in ticket_category state
     await SupportQuery.next()
     await bot.send_message(call.from_user.id, 'Пожалуйста, укажите своё ФИО (полностью)')
+    logging.info('additional_info, next FIO')
 
 
 async def additional_info_1(message: types.Message, state: FSMContext):
